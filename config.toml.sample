@@ -6,7 +6,7 @@ log_headers = false
 api_url = "https://api.github.com/repos/vassalengine/vassal/issues"
 api_token = ""
 log_url = "https://vassalengine.org/files/gh"
-max_content_length = 16 * 1024 * 1024
+max_log_size = 2
 
 bucket_name = "obj.vassalengine.org"
 bucket_region = "us-east-1"

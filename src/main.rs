@@ -52,7 +52,8 @@ pub struct AppState {
     api_url: String,
     api_token: String,
     log_url: String,
-    bucket_base_dir: String
+    bucket_base_dir: String,
+    max_log_size: usize
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -175,10 +176,12 @@ impl Uploader for BucketUploader {
 pub enum AppError {
     #[error("{0}")]
     MultipartError(#[from] MultipartError),
-    #[error("missing field {0}")]
+    #[error("Missing field {0}")]
     MissingField(&'static str),
     #[error("{0}")]
     RequestError(#[from] reqwest::Error),
+    #[error("Payload too large")]
+    TooLarge,
     #[error("{0}")]
     UploadError(#[from] UploadError) 
 }
@@ -217,6 +220,7 @@ impl From<&AppError> for StatusCode {
             AppError::MissingField(_) => StatusCode::BAD_REQUEST,
             AppError::MultipartError(_) => StatusCode::BAD_REQUEST,
             AppError::RequestError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::TooLarge => StatusCode::PAYLOAD_TOO_LARGE,
             AppError::UploadError(_) => StatusCode::INTERNAL_SERVER_ERROR
         }
     }
@@ -263,6 +267,10 @@ async fn post_report(
     let log = log.ok_or(AppError::MissingField("log"))?;
 
     let log_size = log.len();
+
+    if log_size > state.max_log_size {
+        return Err(AppError::TooLarge);
+    }
 
     let mut sha1_hasher = Sha1::new();
     sha1_hasher.update(&log[..]);
@@ -338,6 +346,7 @@ pub struct Config {
     pub api_url: String,
     pub api_token: String,
     pub log_url: String,
+    pub max_log_size: usize,
 
     pub bucket_name: String,
     pub bucket_region: String,
@@ -386,7 +395,8 @@ async fn run() -> Result<(), StartupError> {
         api_url: config.api_url,
         api_token: config.api_token,
         log_url: config.log_url,
-        bucket_base_dir: config.bucket_base_dir
+        bucket_base_dir: config.bucket_base_dir,
+        max_log_size: config.max_log_size << 20 // MB to bytes
     });
 
     // set up router
