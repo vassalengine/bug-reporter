@@ -1,7 +1,11 @@
-user = "vassalengine"
-repo = "vassal"
-api_token = ""
+base_path = "/"
+listen_ip = "0.0.0.0"
+listen_port = 6000
+log_headers = false
 
+api_url = "https://api.github.com/repos/vassalengine/vassal/issues"
+api_token = ""
+log_url = "https://vassalengine.org/files/gh"
 max_content_length = 16 * 1024 * 1024
 
 bucket_name = "obj.vassalengine.org"
@@ -11,5 +15,3 @@ bucket_access_key = ""
 bucket_secret_key = ""
 bucket_base_url = "https://obj.vassalengine.org"
 bucket_base_dir = "tracker/gh"
-
-log_url = "https://vassalengine.org/files/gh"
