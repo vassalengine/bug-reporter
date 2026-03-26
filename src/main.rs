@@ -346,7 +346,6 @@ pub struct Config {
     pub bucket_secret_key: String,
     pub bucket_base_url: String,
     pub bucket_base_dir: String
-
 }
 
 #[derive(Debug, thiserror::Error)]
