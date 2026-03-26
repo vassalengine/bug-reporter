@@ -1,0 +1,20 @@
+[package]
+name = "bug-reporter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = { version = "0.8", features = ["http1", "http2", "macros", "query", "tokio"] }
+glc = { path = "../V4/api/game-library/game-library-common" }
+http = "1.4.0"
+mime = "0.3.17"
+toml = "0.9"
+reqwest = { version = "0.13", features = ["json"] }
+rust-s3 = "0.37.1"
+serde = { version = "1.0", features = ["derive"] }
+sha1 = "0.10"
+thiserror = "2.0"
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.5", features = ["limit"] }
+tower-http = { version = "0.6", features = ["compression-br", "compression-deflate", "compression-gzip", "compression-zstd", "set-header", "timeout", "trace"] }
+tracing = "0.1"
