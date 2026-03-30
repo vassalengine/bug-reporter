@@ -52,7 +52,6 @@ pub struct AppState {
     api_url: String,
     api_token: String,
     log_url: String,
-    bucket_base_dir: String,
     max_log_size: usize
 }
 
@@ -405,7 +404,6 @@ async fn run() -> Result<(), StartupError> {
         api_url: config.api_url,
         api_token: config.api_token,
         log_url: config.log_url,
-        bucket_base_dir: config.bucket_base_dir,
         max_log_size: config.max_log_size << 20 // MB to bytes
     });
 
