@@ -147,7 +147,7 @@ impl Uploader for BucketUploader {
         R: AsyncRead + Unpin + Send
     {
         let path = format!("{0}/{filename}", self.base_dir);
-        self.bucket.put_object_stream(&mut reader, &path).await?;
+        let resp = self.bucket.put_object_stream(&mut reader, &path).await?;
         info!(
             "{} bytes uploade to bucket, {}",
             resp.uploaded_bytes(),
