@@ -149,7 +149,7 @@ impl Uploader for BucketUploader {
         let path = format!("{0}/{filename}", self.base_dir);
         let resp = self.bucket.put_object_stream(&mut reader, &path).await?;
         info!(
-            "{} bytes uploade to bucket, {}",
+            "{} bytes uploaded to bucket, {}",
             resp.uploaded_bytes(),
             resp.status_code()
         );
@@ -172,7 +172,7 @@ impl Uploader for BucketUploader {
             content_type
         ).await?;
         info!(
-            "{} bytes uploade to bucket, {}",
+            "{} bytes uploaded to bucket, {}",
             resp.uploaded_bytes(),
             resp.status_code()
         );
