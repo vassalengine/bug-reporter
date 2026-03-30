@@ -147,8 +147,12 @@ impl Uploader for BucketUploader {
         R: AsyncRead + Unpin + Send
     {
         let path = format!("{0}/{filename}", self.base_dir);
-// TODO: check return code?
         self.bucket.put_object_stream(&mut reader, &path).await?;
+        info!(
+            "{} bytes uploade to bucket, {}",
+            resp.uploaded_bytes(),
+            resp.status_code()
+        );
         Ok(format!("{0}/{path}", self.base_url))
     }
 
@@ -162,12 +166,16 @@ impl Uploader for BucketUploader {
         R: AsyncRead + Unpin + Send
     {
         let path = format!("{0}/{filename}", self.base_dir);
-// TODO: check return code?
-        self.bucket.put_object_stream_with_content_type(
+        let resp = self.bucket.put_object_stream_with_content_type(
             &mut reader,
             &path,
             content_type
         ).await?;
+        info!(
+            "{} bytes uploade to bucket, {}",
+            resp.uploaded_bytes(),
+            resp.status_code()
+        );
         Ok(format!("{0}/{path}", self.base_url))
     }
 }
