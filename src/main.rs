@@ -285,17 +285,17 @@ async fn post_report(
     let mut sha1_hasher = Sha1::new();
     sha1_hasher.update(&log[..]);
 
-    let log_sha1 = sha1_hasher.finalize();
+    let log_sha1 = format!("{:x}", sha1_hasher.finalize());
 
     // upload log
     state.uploader.upload_with_content_type(
-        &format!("{}/{:x}", state.bucket_base_dir, log_sha1),
+        &log_sha1,
         &log[..],
         TEXT_PLAIN.as_ref()
     ).await?; 
 
     // submit report
-    let log_url = format!("{}/{:x}", state.log_url, log_sha1);
+    let log_url = format!("{}/{log_sha1}", state.log_url);
 
     let body = format!("| ABR | |\n|-----|-----|\n| Version | {version} |\n| Reporter | {email} |\n| Error Log | [{log_size} bytes]({log_url}) |\n\n<pre>{desc}</pre>");
 
