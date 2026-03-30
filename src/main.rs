@@ -148,12 +148,13 @@ impl Uploader for BucketUploader {
     {
         let path = format!("{0}/{filename}", self.base_dir);
         let resp = self.bucket.put_object_stream(&mut reader, &path).await?;
+        let url = format!("{0}/{path}", self.base_url);
         info!(
-            "{} bytes uploaded to bucket, {}",
+            "{} bytes uploaded to {url}, {}",
             resp.uploaded_bytes(),
             resp.status_code()
         );
-        Ok(format!("{0}/{path}", self.base_url))
+        Ok(url)
     }
 
     async fn upload_with_content_type<R>(
@@ -171,12 +172,13 @@ impl Uploader for BucketUploader {
             &path,
             content_type
         ).await?;
+        let url = format!("{0}/{path}", self.base_url);
         info!(
-            "{} bytes uploaded to bucket, {}",
+            "{} bytes uploaded to {url}, {}",
             resp.uploaded_bytes(),
             resp.status_code()
         );
-        Ok(format!("{0}/{path}", self.base_url))
+        Ok(url)
     }
 }
 
