@@ -12,6 +12,7 @@ use axum::{
     routing::post
 };
 use glc::server::{setup_logging, serve, SpanMaker};
+use hex;
 use http::header::{HeaderMap, HeaderName, HeaderValue};
 use reqwest::{
     Client,
@@ -284,7 +285,7 @@ async fn post_report(
     let mut sha1_hasher = Sha1::new();
     sha1_hasher.update(&log[..]);
 
-    let log_sha1 = format!("{:x}", sha1_hasher.finalize());
+    let log_sha1 = format!("{}", hex::encode(sha1_hasher.finalize()));
 
     // upload log
     state.uploader.upload_with_content_type(

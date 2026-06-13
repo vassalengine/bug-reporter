@@ -6,13 +6,14 @@ edition = "2024"
 [dependencies]
 axum = { version = "0.8", features = ["http1", "http2", "macros", "query", "tokio"] }
 glc = { path = "../V4/api/game-library/game-library-common" }
+hex = "0.4"
 http = "1.4"
 mime = "0.3"
 toml = "1.1"
 reqwest = { version = "0.13", features = ["json"] }
 rust-s3 = "0.37.1"
 serde = { version = "1.0", features = ["derive"] }
-sha1 = "0.10"
+sha1 = "0.11"
 thiserror = "2.0"
 tokio = { version = "1", features = ["full"] }
 tower = { version = "0.5", features = ["limit"] }
