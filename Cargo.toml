@@ -17,5 +17,5 @@ sha1 = "0.11"
 thiserror = "2.0"
 tokio = { version = "1", features = ["full"] }
 tower = { version = "0.5", features = ["limit"] }
-tower-http = { version = "0.6", features = ["compression-br", "compression-deflate", "compression-gzip", "compression-zstd", "set-header", "timeout", "trace"] }
+tower-http = { version = "0.7", features = ["compression-br", "compression-deflate", "compression-gzip", "compression-zstd", "set-header", "timeout", "trace"] }
 tracing = "0.1"
