@@ -2,7 +2,7 @@ use axum::{
     Router,
     http::{
         StatusCode,
-        header::{AUTHORIZATION, USER_AGENT}
+        header::{AUTHORIZATION, CONTENT_ENCODING, USER_AGENT}
     },
     extract::{
         Multipart, State,
@@ -33,7 +33,7 @@ use sha1::{Digest, Sha1};
 use std::{
     fs,
     future::Future,
-    io,
+    io::{self, Write},
     net::IpAddr,
     sync::Arc,
     time::Duration
@@ -121,10 +121,16 @@ impl BucketUploader {
         )?
         .with_path_style()
         .with_extra_headers(
-            HeaderMap::from_iter([(
-                HeaderName::from_static("x-amz-acl"),
-                HeaderValue::from_static("public-read")
-            )])
+            HeaderMap::from_iter([
+                (
+                    HeaderName::from_static("x-amz-acl"),
+                    HeaderValue::from_static("public-read")
+                ),
+                (
+                    CONTENT_ENCODING,
+                    HeaderValue::from_static("br")
+                )
+            ])
         )?;
 
         Ok(
@@ -282,15 +288,20 @@ async fn post_report(
         return Err(AppError::TooLarge);
     }
 
+    // hash the log to name it
     let mut sha1_hasher = Sha1::new();
     sha1_hasher.update(&log[..]);
-
     let log_sha1 = format!("{}", hex::encode(sha1_hasher.finalize()));
+
+    // compress log with brotli
+    let mut br_writer = brotli::CompressorWriter::new(vec![], 4096, 11, 22);
+    br_writer.write_all(&log[..]).unwrap();
+    let br_log = br_writer.into_inner();
 
     // upload log
     state.uploader.upload_with_content_type(
         &log_sha1,
-        &log[..],
+        &br_log[..],
         TEXT_PLAIN.as_ref()
     ).await?; 
 
